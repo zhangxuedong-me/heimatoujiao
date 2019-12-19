@@ -8,7 +8,7 @@
       <el-container>
 
         <el-header>
-          中间头部内容
+          <layout-header></layout-header>
         </el-header>
 
         <el-main>
@@ -23,6 +23,7 @@
 
 <script>
 import layoutAside from '../../components/layout-aside.vue'
+import layoutHeader from '../../components/layout-header.vue'
 export default {
 
   data () {
@@ -33,7 +34,8 @@ export default {
 
   components: {
 
-    'layout-aside': layoutAside
+    'layout-aside': layoutAside,
+    'layout-header': layoutHeader
   }
 }
 </script>

@@ -4,7 +4,7 @@
             <img src="../assets/img/logo_admin.png" alt="">
         </div>
         <el-menu router background-color="#353b4e" text-color="#adafb5" active-text-color="#ffd04b">
-            <el-menu-item index="1" style="padding-left: 60px;">
+            <el-menu-item style="padding-left: 60px;">
                 首页
             </el-menu-item>
             <el-submenu index="2">
@@ -21,7 +21,7 @@
                 <el-menu-item style="padding-left: 80px;">粉丝画像</el-menu-item>
                 <el-menu-item style="padding-left: 80px;">粉丝列表</el-menu-item>
              </el-submenu>
-              <el-menu-item index="3" style="padding-left: 60px;">
+              <el-menu-item style="padding-left: 60px;">
                 账户信息
             </el-menu-item>
         </el-menu>
