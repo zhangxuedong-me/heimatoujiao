@@ -11,7 +11,7 @@
             <!-- 通过prop属性验证需要验证的每一个字段 -->
             <el-form-item prop="mobile">
 
-                <!-- 给input按钮设置数据的双向绑定 -->
+                <!-- 给input按钮设置数据的双向绑定，收集数据 -->
                 <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item prop="code">
@@ -68,7 +68,6 @@ export default {
           // validator是固定的，自定义验证函数来验证，第一个参数是验证规则，
           // 第二个参数是要验证的值，第三参数是回调函数，必须调用，否则该函数无法执行
           { validator (rule, value, callback) {
-            console.log(value)
             value ? callback() : callback(new Error('请勾选协议'))
           } }
         ]
@@ -79,10 +78,29 @@ export default {
     isData () {
       // 获取表单元素验证是否通过，validate是一个方法第一个参数是验证成功，第二个参数是一个对象，是没有验证成功的字段
       // 第一个参数会返回boolean类型的值，成功为true，否则为false
-      this.$refs.myForm.validate(function (isOk, obj) {
+      this.$refs.myForm.validate((isOk, obj) => {
+        console.log(isOk)
         if (isOk) {
-          console.log(obj)
-          alert('登录成功')
+          // 发送请求判断用户输入的手机号和密码是否正确
+          this.$http({
+
+            url: 'authorizations',
+            data: this.loginForm,
+            method: 'post'
+          }).then(result => {
+            // 本地存储token，每次登陆的时候携带过去
+            window.localStorage.setItem('token-item', result.data.data.token)
+
+            // 跳转到主页免去
+            this.$router.push('/home')
+          }).catch(() => {
+            setTimeout(() => {
+              this.$message({
+                message: '请输入正确的手机号或者验证码',
+                type: 'warning'
+              })
+            }, 500)
+          })
         }
       })
     }
