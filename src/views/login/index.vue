@@ -79,7 +79,6 @@ export default {
       // 获取表单元素验证是否通过，validate是一个方法第一个参数是验证成功，第二个参数是一个对象，是没有验证成功的字段
       // 第一个参数会返回boolean类型的值，成功为true，否则为false
       this.$refs.myForm.validate((isOk, obj) => {
-        console.log(isOk)
         if (isOk) {
           // 发送请求判断用户输入的手机号和密码是否正确
           this.$http({
