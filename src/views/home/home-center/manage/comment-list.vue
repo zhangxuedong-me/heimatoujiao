@@ -1,6 +1,6 @@
 <template>
   <div>
-      评论列表
+    <bread-bits></bread-bits>
   </div>
 </template>
 
