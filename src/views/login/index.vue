@@ -87,18 +87,13 @@ export default {
             data: this.loginForm,
             method: 'post'
           }).then(result => {
-            // 本地存储token，每次登陆的时候携带过去
-            window.localStorage.setItem('token-item', result.data.data.token)
+            // 本地存储token，每次登陆的时候携带过去，并且需要判断如果有值的话才存储token
+            if (result !== undefined) {
+              window.localStorage.setItem('token-item', result.data.token)
 
-            // 跳转到主页免去
-            this.$router.push('/home')
-          }).catch(() => {
-            setTimeout(() => {
-              this.$message({
-                message: '请输入正确的手机号或者验证码',
-                type: 'warning'
-              })
-            }, 500)
+              // 跳转到主页免去
+              this.$router.push('/home')
+            }
           })
         }
       })

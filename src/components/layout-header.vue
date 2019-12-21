@@ -60,18 +60,12 @@ export default {
   },
 
   created () {
-    // 获取用户的token
-    let token = window.localStorage.getItem('token-item')
-
     // 页面一初始化完毕先获取用户的资料
     this.$http({
       url: 'user/profile',
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: 'get'
     }).then(result => {
-      this.infoData = result.data.data
+      this.infoData = result.data
     })
   }
 }

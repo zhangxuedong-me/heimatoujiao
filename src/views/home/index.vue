@@ -22,20 +22,12 @@
 </template>
 
 <script>
-import layoutAside from '../../components/layout-aside.vue'
-import layoutHeader from '../../components/layout-header.vue'
 export default {
 
   data () {
     return {
 
     }
-  },
-
-  components: {
-
-    'layout-aside': layoutAside,
-    'layout-header': layoutHeader
   }
 }
 </script>
