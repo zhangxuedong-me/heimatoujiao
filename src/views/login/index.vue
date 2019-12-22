@@ -87,13 +87,21 @@ export default {
             data: this.loginForm,
             method: 'post'
           }).then(result => {
+            // 登录成功的提示
+            this.$message({
+              message: '恭喜你登录成功',
+              type: 'success'
+            })
             // 本地存储token，每次登陆的时候携带过去，并且需要判断如果有值的话才存储token
-            if (result !== undefined) {
-              window.localStorage.setItem('token-item', result.data.token)
+            window.localStorage.setItem('token-item', result.data.token)
 
-              // 跳转到主页免去
+            // 跳转到主页免去
+            window.setTimeout(() => {
               this.$router.push('/home')
-            }
+            }, 500)
+          }).catch((err) => {
+            // 将错误抛出去
+            throw err
           })
         }
       })

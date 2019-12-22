@@ -1,6 +1,8 @@
 <template>
   <div>
-      素材管理
+    <el-card>
+
+    </el-card>
   </div>
 </template>
 

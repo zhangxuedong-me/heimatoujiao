@@ -1,4 +1,8 @@
 import axios from 'axios'
+
+// 解决javscript数值超出安全范围的数值的插件
+import JSONBig from 'json-bigint'
+
 // 求情拦截器的好处：在于如果每个组件中有很多的请求，并且有一些请求的参数，都一样
 // 就可以在请求拦截中，拦截下来，把参数强行注入，就不用在每个请求中写入相同的参数
 
@@ -22,6 +26,12 @@ axios.interceptors.request.use(function (config) {
   // 执行请求错误的处理
 })
 
+// 解决数值超出javascript安全数值范围的情况
+axios.defaults.transformResponse = [function (data) {
+  // 他解决后的id是数值类型的，如果需要是字符串类型的需要转换一下，在请求中
+  return data ? JSONBig.parse(data) : {} // 解决js处理大数字失真问题
+}]
+
 // 响应拦截器的处理
 axios.interceptors.response.use(function (response) {
   // 可以将响应的数据简化一下，并且如果没有响应的数据的话返回空对象，防止报错
@@ -33,7 +43,7 @@ axios.interceptors.response.use(function (response) {
   // 设置状态的提示信息
   let message = ''
 
-  // 处理不同状态的信息
+  // 处理不同状态的信息，根据不同的错误和不同的请求地址，做出不同的错误报告
   switch (err.response.status) {
     case 400 :
       switch (url) {
@@ -69,6 +79,9 @@ axios.interceptors.response.use(function (response) {
     message,
     type: 'warning'
   })
+
+  // 将错误返回到catch中，因为若果不返回错误的话，会进入到请求中的then和catch中，防止进入then中
+  return Promise.reject(err)
 })
 
 export default axios

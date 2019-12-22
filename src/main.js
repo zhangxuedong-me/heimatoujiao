@@ -8,7 +8,6 @@ import axios from './utils/request.js'
 import Compont from './components/index.js'
 import './permission'
 Vue.config.productionTip = false
-
 // 注册全局element-ui和全局组件
 Vue.use(ElementUI)
 Vue.use(Compont)
