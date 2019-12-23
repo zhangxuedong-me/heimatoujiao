@@ -69,7 +69,7 @@ export default {
         }
       }).then(result => {
         this.infoList = result.data.results
-
+        console.log(this.infoList)
         // 先获取到总页码数
         this.page.total = result.data.total_count
         setTimeout(() => {
