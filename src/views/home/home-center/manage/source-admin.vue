@@ -7,30 +7,17 @@
           </template>
       </bread-bits>
         <el-tabs v-model="activeName" @tab-click="checkTab">
-          <el-tab-pane label="全部图片" name="all">
-            <div class="all-img">
-              <el-card v-for="item in list" :key="item.id" class="all-card">
-                <img :src="item.url" alt="">
-                <div>
-                 <el-row class="ele_btn" type="flex" justify="space-around">
+          <el-tab-pane label="全部图片" name="all"></el-tab-pane>
+          <el-tab-pane label="收藏图片" name="collect"></el-tab-pane>
+          <div class="all-img">
+            <el-card v-for="item in list" :key="item.id" class="all-card">
+              <img :src="item.url" alt="">
+                <el-row class="ele_btn" type="flex" justify="space-around">
                   <span :style="{color: item.is_collected ? 'red' : '#666'}" @click="collectClick(item)" class="el-icon-star-on"></span>
                   <span class="el-icon-delete"></span>
                 </el-row>
-              </div>
-              </el-card>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="收藏图片" name="collect">
-             <div class="all-img">
-               <el-card v-for="item in list" :key="item.id" class="all-card">
-                <img :src="item.url" alt="">
-                 <el-row class="ele_btn" type="flex" justify="space-around">
-                  <span :style="{color: item.is_collected ? 'red' : '#666'}" @click="collectClick(item)" class="el-icon-star-on"></span>
-                  <span class="el-icon-delete"></span>
-                </el-row>
-               </el-card>
-             </div>
-          </el-tab-pane>
+            </el-card>
+          </div>
           <el-row type="flex" justify="center" style="margin-top: 20px;">
             <el-pagination @current-change="pageChange" :page-size="page.pageSize" :current-page="page.currPage" background layout="prev, pager, next" :total="page.total"></el-pagination>
           </el-row>
