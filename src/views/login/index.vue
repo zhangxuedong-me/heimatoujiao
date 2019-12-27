@@ -19,7 +19,7 @@
                 <el-button class="login-btn" style="width: 20%; float: right;" plain>发送验证码</el-button>
             </el-form-item>
             <el-form-item prop="flag">
-                <el-checkbox v-model="loginForm.flag">我已阅读并同意用户协议和隐私条款</el-checkbox>
+                <el-switch v-model="loginForm.flag" active-text="我已阅读并同意用户协议和隐私条款"></el-switch>
             </el-form-item>
             <el-form-item>
                  <el-button @click="isData" class="login-submit" type="primary">登录</el-button>
@@ -115,7 +115,7 @@ export default {
     .login {
 
         height: 100vh;
-        background: url('../../assets/img/beijin.jpg') no-repeat;
+        background: url('../../assets/img/beijin4.jpg') no-repeat;
         background-size: cover;
         display: flex;
         justify-content: center;

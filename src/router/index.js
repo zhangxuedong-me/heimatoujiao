@@ -25,6 +25,8 @@ const routes = [
 
       // 内容管理部分路由组件
       { path: '/home/publish', component: () => import('../views/home/home-center/manage/publish-article.vue') },
+      // 接收id参数的路由
+      { path: '/home/publish/:id', component: () => import('../views/home/home-center/manage/publish-article.vue') },
       { path: '/home/articles', component: () => import('../views/home/home-center/manage/article-list.vue') },
       { path: '/home/comment', component: () => import('../views/home/home-center/manage/comment-list.vue') },
       { path: '/home/source', component: () => import('../views/home/home-center/manage/source-admin.vue') },
