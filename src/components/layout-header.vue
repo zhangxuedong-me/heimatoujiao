@@ -2,7 +2,7 @@
   <div>
       <el-row class="header-title" type="flex" align="middle">
           <el-col :span="12">
-              <span class="el-icon-tickets"></span>
+              <span @click="foldOrOpen" style="font-size: 20px;cursor: pointer;" :class="fold ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></span>
               <span style="padding-left: 6px;">江苏传智播客教育科技股份有限公司</span>
           </el-col>
           <el-col :span="12" class="right">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import EventBus from '../utils/EventBus.js'
 export default {
 
   data () {
@@ -43,7 +44,8 @@ export default {
 
       // 先将一个图片转换成了一个变量
       imgSrc: require('../assets/img/avatar.jpg'),
-      infoData: {}
+      infoData: {},
+      fold: true
     }
   },
   methods: {
@@ -56,6 +58,11 @@ export default {
         this.$router.go(-1)
         window.localStorage.removeItem('token-item')
       }
+    },
+
+    foldOrOpen () {
+      this.fold = !this.fold
+      EventBus.$emit('btnChange')
     }
   },
 
@@ -66,6 +73,14 @@ export default {
       method: 'get'
     }).then(result => {
       this.infoData = result.data
+    })
+    EventBus.$on('imgChange', () => {
+      this.$http({
+        url: 'user/profile',
+        method: 'get'
+      }).then(result => {
+        this.infoData = result.data
+      })
     })
   }
 }
@@ -79,12 +94,11 @@ export default {
         .el-icon-tickets {
 
             font-size: 20px;
-
         }
        .right {
            cursor: pointer;
             img {
-
+                width: 40px;
                 height: 40px;
                 border-radius: 50%;
                 margin-right: 20px;

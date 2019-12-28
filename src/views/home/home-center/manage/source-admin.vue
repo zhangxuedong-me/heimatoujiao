@@ -34,8 +34,8 @@
           <el-tab-pane label="全部图片" name="all"></el-tab-pane>
           <el-tab-pane label="收藏图片" name="collect"></el-tab-pane>
           <div class="all-img">
-            <el-card v-for="item in list" :key="item.id" class="all-card">
-              <img :src="item.url" alt="">
+            <el-card v-for="(item, index) in list" :key="item.id" class="all-card">
+              <img style="cursor: pointer;" :src="item.url" alt="" @click="openDialog(index)">
                 <el-row class="ele_btn" type="flex" justify="space-around">
                   <span :style="{color: item.is_collected ? 'red' : '#666'}" @click="collectClick(item)" class="el-icon-star-on"></span>
                   <span class="el-icon-delete" @click="delImg(item.id)"></span>
@@ -46,6 +46,13 @@
             <el-pagination @current-change="pageChange" :page-size="page.pageSize" :current-page="page.currPage" background layout="prev, pager, next" :total="page.total"></el-pagination>
           </el-row>
         </el-tabs>
+        <el-dialog @opened="opeEnd" :visible="dialogShow" @close="closeDialog">
+          <el-carousel ref="dialog" indicator-position="outside">
+            <el-carousel-item v-for="(item, index) in list" :key="index">
+              <img class="bigImg" :src="item.url" alt="">
+            </el-carousel-item>
+          </el-carousel>
+        </el-dialog>
     </el-card>
   </div>
 </template>
@@ -62,7 +69,9 @@ export default {
         currPage: 1,
         total: 0
       },
-      flag: false
+      flag: false,
+      dialogShow: false,
+      imgIndex: null
     }
   },
 
@@ -150,6 +159,19 @@ export default {
       }).then(result => {
         this.getImgData()
       })
+    },
+
+    openDialog (index) {
+      this.dialogShow = true
+      this.imgIndex = index
+    },
+
+    closeDialog () {
+      this.dialogShow = false
+    },
+
+    opeEnd () {
+      this.$refs.dialog.setActiveItem(this.imgIndex)
     }
   },
 
@@ -188,5 +210,10 @@ export default {
         cursor: pointer;
       }
     }
+  }
+  .bigImg {
+
+    width: 100%;
+    height: 100%;
   }
 </style>

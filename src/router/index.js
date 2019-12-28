@@ -15,12 +15,13 @@ const routes = [
   // 一级路由导航
   // 默认导航
   { path: '/', redirect: '/login' },
+  // 配置404页面
+  { path: '*', component: () => import('../views/error/error.vue') },
   // 主页路由
   {
     path: '/home',
     component: homepage,
     children: [
-
       { path: '', component: home },
 
       // 内容管理部分路由组件
