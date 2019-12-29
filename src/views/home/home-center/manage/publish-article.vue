@@ -35,6 +35,10 @@
 </template>
 
 <script>
+
+// 按需引入请求
+import { getChannels, PublishArticles, getIdArticleInfo } from '../../../../axios/index.js'
+
 export default {
 
   data () {
@@ -70,48 +74,30 @@ export default {
     }
   },
   methods: {
-    publishArticle (draft) {
-      this.$refs.form.validate(isOk => {
-        let { id } = this.$route.params
-        if (isOk) {
-          this.$http({
-
-            // 判断若果有id的话说明是要修改发布的，如果没有id的话，说明是要发布新的文章
-            url: id ? `articles/${id}` : 'articles',
-            method: id ? 'put' : 'post',
-            params: { draft },
-            data: this.formData
-
-          }).then(result => {
-            setTimeout(() => {
-              this.$router.push('/home/articles')
-            }, 500)
-          })
-        }
-      })
+    async publishArticle (draft) {
+      let isOk = await this.$refs.form.validate()
+      let { id } = this.$route.params
+      if (isOk) {
+        await PublishArticles(id, draft, this.formData)
+        setTimeout(() => {
+          this.$router.push('/home/articles')
+        }, 500)
+      }
     },
 
     // 获取频道的数据
-    getChannelData () {
-      this.$http({
-        url: 'channels',
-        method: 'get'
-      }).then(result => {
-        this.channelData = result.data.channels
-      })
+    async getChannelData () {
+      let result = await getChannels()
+      this.channelData = result.data.channels
     },
 
     // 根据传递过来的id获取该文章信息
-    getIdArticle () {
+    async getIdArticle () {
       // 判断一下是否有文章id的值有的话，再发送请求查找
       if (this.$route.params.id) {
-        this.$http({
-          url: `articles/${this.$route.params.id}`,
-          method: 'get'
-        }).then(result => {
+        let result = await getIdArticleInfo(this.$route.params.id)
         // 将获取到的数据直接给我们默认定义的初始化的数据
-          this.formData = result.data
-        })
+        this.formData = result.data
       }
     },
 

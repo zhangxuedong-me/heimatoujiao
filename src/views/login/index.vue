@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { getUserloginInfo } from '../../axios/index.js'
 export default {
 
   data () {
@@ -75,36 +76,30 @@ export default {
     }
   },
   methods: {
-    isData () {
+    async isData () {
       // 获取表单元素验证是否通过，validate是一个方法第一个参数是验证成功，第二个参数是一个对象，是没有验证成功的字段
       // 第一个参数会返回boolean类型的值，成功为true，否则为false
-      this.$refs.myForm.validate((isOk, obj) => {
+      try {
+        let isOk = await this.$refs.myForm.validate()
         if (isOk) {
-          // 发送请求判断用户输入的手机号和密码是否正确
-          this.$http({
-
-            url: 'authorizations',
-            data: this.loginForm,
-            method: 'post'
-          }).then(result => {
-            // 登录成功的提示
-            this.$message({
-              message: '恭喜你登录成功',
-              type: 'success'
-            })
-            // 本地存储token，每次登陆的时候携带过去，并且需要判断如果有值的话才存储token
-            window.localStorage.setItem('token-item', result.data.token)
-
-            // 跳转到主页免去
-            window.setTimeout(() => {
-              this.$router.push('/home')
-            }, 500)
-          }).catch((err) => {
-            // 将错误抛出去
-            throw err
+        // 发送请求判断用户输入的手机号和密码是否正确
+          let result = await getUserloginInfo('post', this.loginForm)
+          // 登录成功的提示
+          this.$message({
+            message: '恭喜你登录成功',
+            type: 'success'
           })
+          // 本地存储token，每次登陆的时候携带过去，并且需要判断如果有值的话才存储token
+          window.localStorage.setItem('token-item', result.data.token)
+
+          // 跳转到主页免去
+          window.setTimeout(() => {
+            this.$router.push('/home')
+          }, 500)
         }
-      })
+      } catch (err) {
+        throw new Error('登录失败')
+      }
     }
   }
 }

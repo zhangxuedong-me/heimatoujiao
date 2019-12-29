@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { uploadUserImage, deleteUserImage } from '../../../../axios/index.js'
 export default {
   data () {
     return {
@@ -81,31 +82,18 @@ export default {
       this.$refs.upload.submit()
     },
     // 上图用户图片素材
-    uploadImg (params) {
+    async uploadImg (params) {
       let fd = new FormData()
       fd.set('image', params.file)
-      this.$http({
-
-        url: 'user/images',
-        method: 'post',
-        data: fd
-
-      }).then(result => {
-        this.getImgData()
-      })
+      await uploadUserImage('post', fd)
+      this.getImgData()
     },
 
     // 删除素材
-    delImg (id) {
-      this.$confirm('您确定要删除这条评论吗？').then(() => {
-        this.$http({
-
-          url: `user/images/${id}`,
-          method: 'delete'
-        }).then(result => {
-          this.getImgData()
-        })
-      })
+    async delImg (id) {
+      await this.$confirm('您确定要删除这条评论吗？')
+      await deleteUserImage('delete', id)
+      this.getImgData()
     },
 
     // 切换页面的事件
@@ -114,51 +102,39 @@ export default {
       this.getImgData()
     },
 
-    getImgData () {
+    async getImgData () {
       this.flag = true
-      this.$http({
+      let params = {
+        // 为false的话返回所有的图片数据，为true的话返回收藏的图片数据
+        // 若果activeName === collect说明是收藏图片的tab栏此时返回的是true，为true返回的就是
+        // 收藏的图片，否则为false返回的就是全部的图片
+        collect: this.activeName === 'collect',
+        page: this.page.currPage,
+        per_page: this.page.pageSize
+      }
+      let result = await uploadUserImage('get', null, params)
+      // 获取到图片的总数
+      this.page.total = result.data.total_count
+      // 将获取到的图片信息数据赋值给定义的数组
+      this.list = result.data.results
 
-        url: 'user/images',
-        method: 'get',
-        params: {
-
-          // 为false的话返回所有的图片数据，为true的话返回收藏的图片数据
-          // 若果activeName === collect说明是收藏图片的tab栏此时返回的是true，为true返回的就是
-          // 收藏的图片，否则为false返回的就是全部的图片
-          collect: this.activeName === 'collect',
-          page: this.page.currPage,
-          per_page: this.page.pageSize
-
-        }
-      }).then(result => {
-        // 获取到图片的总数
-        this.page.total = result.data.total_count
-        // 将获取到的图片信息数据赋值给定义的数组
-        this.list = result.data.results
-
-        setTimeout(() => {
-          this.flag = false
-        }, 300)
-      })
+      setTimeout(() => {
+        this.flag = false
+      }, 300)
     },
 
     checkTab () {
       this.page.currPage = 1
       this.getImgData()
     },
-    collectClick (item) {
+    async collectClick (item) {
+      let data = {
+        // 如果图片是收藏的那么状态是true，那么点击的时候肯定要取消收藏，所有需要取反
+        collect: !item.is_collected
+      }
       // 设置收藏图片，需要将收藏的图片的id传递过去，还要将状态以body形式传递过去
-      this.$http({
-        url: `user/images/${item.id}`,
-        method: 'put',
-        data: {
-
-          // 如果图片是收藏的那么状态是true，那么点击的时候肯定要取消收藏，所有需要取反
-          collect: !item.is_collected
-        }
-      }).then(result => {
-        this.getImgData()
-      })
+      await deleteUserImage('put', item.id, data)
+      this.getImgData()
     },
 
     openDialog (index) {

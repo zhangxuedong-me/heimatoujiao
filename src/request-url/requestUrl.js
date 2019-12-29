@@ -1,0 +1,7 @@
+export const API_GET_CHANNELS = 'channels'
+export const API_PUBLISH_ARTICLE = 'articles'
+export const API_COMMONTS_STATUS = 'comments/status'
+export const API_USER_IMAGES = 'user/images'
+export const API_AUTHOR_IZATIONS = 'authorizations'
+export const API_USER_PROFILE = 'user/profile'
+export const API_USER_PHOTO = 'user/photo'

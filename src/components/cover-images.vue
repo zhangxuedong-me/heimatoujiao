@@ -1,11 +1,9 @@
 <template>
   <div class="cover-image">
-
       <!-- 显示选中的图片区域 -->
       <div @click="openDialog(index)" class="cover-image-item" v-for="(item, index) in imgsList" :key="index">
           <img :src="item ? item : defaultUrl " alt="">
       </div>
-
       <!-- 弹层区域 -->
       <el-dialog width="50%" @close="closeDialog" title="请选择图片" :visible="show">
         <upload-image  @imgurl="getUrl"></upload-image>

@@ -41,7 +41,6 @@ export default {
 
   data () {
     return {
-
       // 先将一个图片转换成了一个变量
       imgSrc: require('../assets/img/avatar.jpg'),
       infoData: {},
@@ -57,30 +56,31 @@ export default {
       } else if (command === 'edit') {
         this.$router.go(-1)
         window.localStorage.removeItem('token-item')
+      } else if (command === 'userMsg') {
+        this.$router.push('/home/account')
       }
     },
 
+    // 伸缩按钮的点击事件
     foldOrOpen () {
       this.fold = !this.fold
       EventBus.$emit('btnChange')
+    },
+
+    async getUserInfo () {
+      let result = await this.$http({
+        url: 'user/profile',
+        method: 'get'
+      })
+      this.infoData = result.data
     }
   },
 
   created () {
     // 页面一初始化完毕先获取用户的资料
-    this.$http({
-      url: 'user/profile',
-      method: 'get'
-    }).then(result => {
-      this.infoData = result.data
-    })
+    this.getUserInfo()
     EventBus.$on('imgChange', () => {
-      this.$http({
-        url: 'user/profile',
-        method: 'get'
-      }).then(result => {
-        this.infoData = result.data
-      })
+      this.getUserInfo()
     })
   }
 }

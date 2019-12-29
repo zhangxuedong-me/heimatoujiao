@@ -31,12 +31,33 @@
           <a href="javascript:;" @click="edit">修改</a>
         </el-row>
       </div>
+      <div class="user-fixed-info">
+        <div class="user-top-info">
+          <span>账号信息</span>
+          <span>头条号类型</span>
+          <span>个人</span>
+        </div>
+        <div class="user-center-info">
+          <span>头条号ID</span>
+          <span>{{ userInfoData.id }}</span>
+        </div>
+        <div class="user-bottom-info">
+          <span>登录方式</span>
+          <span>绑定手机号</span>
+          <span>{{ userInfoData.mobile }}</span>
+        </div>
+        <div class="footer">
+          <span>邮箱</span>
+          <span>{{ userInfoData.email }}</span>
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
 import EventBus from '../../../../utils/EventBus.js'
+import { getUserInfoData, uploadUserPhoto } from '../../../../axios/index.js'
 export default {
   data () {
     return {
@@ -49,28 +70,19 @@ export default {
 
   methods: {
     // 获取用户信息
-    getUserInfo () {
-      this.$http({
-        url: 'user/profile',
-        method: 'get'
-      }).then(result => {
-        this.userInfoData = result.data
-        this.imgSrc = result.data.photo
-      })
+    async getUserInfo () {
+      let result = await getUserInfoData()
+      this.userInfoData = result.data
+      this.imgSrc = result.data.photo
     },
 
     // 上传用户头像
-    uploadUserImage (params) {
+    async uploadUserImage (params) {
       let data = new FormData()
       data.append('photo', params.file)
-      this.$http({
-        url: 'user/photo',
-        method: 'patch',
-        data
-      }).then(result => {
-        this.getUserInfo()
-        EventBus.$emit('imgChange')
-      })
+      await uploadUserPhoto('patch', data)
+      this.getUserInfo()
+      EventBus.$emit('imgChange')
     },
 
     // 修改按钮的点击事件
@@ -80,21 +92,17 @@ export default {
     },
 
     // 保存按钮的事件
-    keepUserInfo () {
-      this.$http({
-        url: 'user/profile',
-        method: 'patch',
-        data: {
-          name: this.userInfoData.name,
-          intro: this.userInfoData.intro,
-          email: this.userInfoData.email
-        }
-      }).then(result => {
-        this.userInfoData = result.data
-        this.flag = true
-        this.editFlage = false
-        EventBus.$emit('imgChange')
-      })
+    async keepUserInfo () {
+      let data = {
+        name: this.userInfoData.name,
+        intro: this.userInfoData.intro,
+        email: this.userInfoData.email
+      }
+      let result = await getUserInfoData('patch', data)
+      this.userInfoData = result.data
+      this.flag = true
+      this.editFlage = false
+      EventBus.$emit('imgChange')
     }
   },
 
@@ -132,8 +140,25 @@ export default {
 
       font-size: 14px;
       color: blue;
-      margin-left: 650px;
+      margin-left: 580px;
       margin-top: 20px;
+    }
+  }
+  .user-fixed-info {
+    div {
+      display: flex;
+    }
+    div:nth-child(2) {
+      padding-left: 106px;
+    }
+    div:last-child{
+      padding-left: 30px;
+    }
+    span {
+      margin-left: 50px;
+      margin-top: 60px;
+
+      font-size: 14px;
     }
   }
 </style>

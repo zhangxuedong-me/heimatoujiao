@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { getChannels, getArticlesList, getIdArticleInfo } from '../../../../axios/index.js'
 export default {
   data () {
     return {
@@ -90,27 +91,18 @@ export default {
   methods: {
 
     // 请求获取频道数据
-    getChannelData () {
-      this.$http({
-        url: 'channels',
-        method: 'get'
-      }).then(result => {
-        this.channelData = result.data.channels
-      })
+    async getChannelData () {
+      let result = await getChannels()
+      this.channelData = result.data.channels
     },
 
     // 请求获取文章列表数据
-    getArticleData (params) {
-      this.$http({
-        url: 'articles',
-        method: 'get',
-        params
-      }).then(result => {
-        // 获取到文章的总数量，赋值给分页的总页数
-        this.page.total = result.data.total_count
-        // 获取文章的数据
-        this.articleData = result.data.results
-      })
+    async getArticleData (params) {
+      let result = await getArticlesList(params)
+      // 获取到文章的总数量，赋值给分页的总页数
+      this.page.total = result.data.total_count
+      // 获取文章的数据
+      this.articleData = result.data.results
     },
 
     pageChange (newPage) {
@@ -140,16 +132,11 @@ export default {
     },
 
     // 删除数据
-    delData (id) {
-      this.$confirm('真的要删除吗，删除之后无法找回？').then(() => {
-        this.$http({
-          url: `articles/${id}`,
-          method: 'delete'
-        }).then(result => {
-          // 重新渲染页面
-          this.packageFactorParams()
-        })
-      })
+    async delData (id) {
+      await this.$confirm('真的要删除吗，删除之后无法找回？')
+      await getIdArticleInfo(id, 'delete')
+      // 重新渲染页面
+      this.packageFactorParams()
     },
 
     modify (id) {

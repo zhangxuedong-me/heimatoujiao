@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { getArticlesList, openOrColse } from '../../../../axios/index.js'
 export default {
   data () {
     return {
@@ -52,56 +53,43 @@ export default {
       this.getCommontData()
     },
 
-    getCommontData () {
+    async getCommontData () {
       this.load = true
-      // 发送请求获取评论数据
-      this.$http({
-
-        url: 'articles',
-        method: 'get',
-        params: {
-
-          // 指定获取评论数据
-          response_type: 'comment',
-          page: this.page.currentPage,
-          per_page: this.page.pageSize
-
-        }
-      }).then(result => {
-        this.infoList = result.data.results
-        console.log(this.infoList)
-        // 先获取到总页码数
-        this.page.total = result.data.total_count
-        setTimeout(() => {
-          this.load = false
-        }, 300)
-      })
+      let params = {
+        //  指定获取评论数据
+        response_type: 'comment',
+        page: this.page.currentPage,
+        per_page: this.page.pageSize
+      }
+      let result = await getArticlesList(params)
+      this.infoList = result.data.results
+      // 先获取到总页码数
+      this.page.total = result.data.total_count
+      setTimeout(() => {
+        this.load = false
+      }, 300)
     },
 
     formatterBoolean (row, column, cellValue, store) {
       return cellValue ? '正常' : '关闭'
     },
 
-    openOrclose (obj) {
+    async openOrclose (obj) {
       // 点击按钮之后判断状态，如果当前状态打开的话，就显示关闭，如果是关闭就显示打开
-      let msg = obj.comment_status ? '关闭' : '打开'
-      this.$confirm(`真的要${msg}评论吗`).then(() => {
-        this.$http({
-          url: 'comments/status',
-          method: 'put',
-          params: {
+      let msg = obj.comment_status ? '打开' : '关闭'
+      await this.$confirm(`真的要${msg}评论吗`)
 
-            // 使用第三方插件解决后的id是数值类型的，如果要字符串类型的需要转换一下
-            article_id: obj.id.toString()
-          },
-          data: {
-            allow_comment: !obj.comment_status
-          }
-        }).then(result => {
-          // 请求成功之后再次调用函数，重新获取数据
-          this.getCommontData()
-        })
-      })
+      let params = {
+        // 使用第三方插件解决后的id是数值类型的，如果要字符串类型的需要转换一下
+        article_id: obj.id.toString()
+      }
+      let data = {
+        allow_comment: !obj.comment_status
+      }
+      await openOrColse('put', params, data)
+
+      // 请求成功之后再次调用函数，重新获取数据
+      this.getCommontData()
     }
   }
 }
